@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>點餐系統 🌸</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="logo"><span>🌸</span><h1>點餐系統</h1></div>
+    <div id="user-info" class="hidden">
+      <span id="user-email"></span>
+      <span id="user-role" class="badge"></span>
+      <button id="my-orders-btn" class="btn outline small hidden">📋 我的訂單</button>
+      <a id="admin-link" href="admin.html" class="admin-link hidden" target="_blank">⚙️ 管理後台</a>
+      <button id="logout-btn" class="btn ghost small">登出</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- 登入 -->
+    <section id="login-section">
+      <div class="card login-card">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">🌸</div>
+        <h2>歡迎回來</h2>
+        <p class="subtitle">使用 Google 帳號登入開始點餐</p>
+        <p id="env-status" style="font-size:0.85rem;color:var(--text-light);margin-bottom:1.25rem;">讀取設定中...</p>
+        <button id="login-btn" class="btn primary full-width hidden">Google 登入</button>
+        <div id="login-error" class="error-msg"></div>
+      </div>
+    </section>
+
+    <!-- 點餐 -->
+    <section id="order-section" class="hidden">
+      <div id="order-status-banner" class="status-banner hidden"></div>
+
+      <div class="section-header">
+        <div>
+          <h2>今日菜單</h2>
+          <p class="sub" id="today-restaurants-label">讀取中...</p>
+        </div>
+      </div>
+
+      <div id="restaurant-tabs" class="restaurant-tabs"></div>
+      <div id="menu-loading" class="loading hidden">讀取菜單中</div>
+      <div id="menu-grid" class="menu-grid"></div>
+      <div id="menu-empty" class="empty-state hidden">
+        <span class="emoji">🍽️</span>今日尚未開放任何餐廳，請聯繫管理員設定。
+      </div>
+      <div id="order-msg" class="msg" style="margin-top:1rem;"></div>
+    </section>
+
+  </main>
+
+  <!-- Cart FAB -->
+  <button id="cart-fab" class="cart-fab hidden">🛒<span id="cart-badge" class="cart-badge">0</span></button>
+
+  <!-- Cart Panel -->
+  <aside id="order-panel" class="order-panel">
+    <div class="order-panel-header">
+      <h3>🛒 我的訂單</h3>
+      <button id="close-panel-btn" class="btn ghost small">✕</button>
+    </div>
+    <div class="order-panel-body" id="order-panel-body">
+      <p class="order-panel-empty">尚未選擇任何餐點</p>
+    </div>
+    <div class="order-panel-footer">
+      <div class="order-total-row">
+        <span class="order-total-label">合計金額</span>
+        <span class="order-total-price" id="order-total">$0</span>
+      </div>
+      <button id="submit-order-btn" class="btn primary full-width" disabled>送出訂單</button>
+      <button id="reset-order-btn" class="btn ghost full-width" style="margin-top:0.5rem;">清空選單</button>
+    </div>
+  </aside>
+
+  <!-- My Orders Modal -->
+  <div id="my-orders-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>📋 我的點餐紀錄</h3>
+        <button id="close-my-orders-btn" class="btn ghost small">✕</button>
+      </div>
+      <div class="modal-body" id="my-orders-modal-body">
+        <p style="color:var(--text-muted);text-align:center;padding:2rem;">讀取中...</p>
+      </div>
+      <div class="modal-footer">
+        <button id="modify-order-btn" class="btn secondary hidden">✏️ 修改訂單</button>
+        <button id="close-my-orders-btn2" class="btn ghost">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="sheetApi.js"></script>
+  <script src="auth.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

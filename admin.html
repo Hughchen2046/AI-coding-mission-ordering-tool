@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理後台 ⚙️ | 點餐系統</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="logo">
+      <span>⚙️</span>
+      <h1>管理後台</h1>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <a href="index.html" class="admin-link">← 返回點餐</a>
+      <span id="admin-user-email" style="font-size:0.9rem;color:var(--text-muted);"></span>
+      <button id="admin-logout-btn" class="btn ghost small">登出</button>
+    </div>
+  </header>
+
+  <!-- 管理員登入守衛 -->
+  <div id="admin-login-guard" style="max-width:420px;margin:4rem auto;padding:0 1.5rem;">
+    <div class="card" style="text-align:center;">
+      <div style="font-size:2rem;margin-bottom:0.5rem;">🔐</div>
+      <h2 style="margin-bottom:0.5rem;">管理員驗證</h2>
+      <p id="admin-env-status" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">讀取設定中...</p>
+      <button id="admin-login-btn" class="btn primary full-width hidden">Google 登入</button>
+      <div id="admin-login-error" class="error-msg"></div>
+    </div>
+  </div>
+
+  <!-- 管理後台主體 -->
+  <main id="admin-main" class="container hidden">
+
+    <!-- 功能列 -->
+    <div class="card" style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <p style="font-size:0.85rem;color:var(--text-muted);">今日訂單狀態</p>
+        <p id="admin-order-status-text" style="font-weight:700;color:var(--text-dark);">讀取中...</p>
+      </div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <button id="dice-btn" class="btn secondary">🎲 隨機選餐廳</button>
+        <button id="close-orders-btn" class="btn outline">🔒 截止訂單</button>
+        <button id="reopen-orders-btn" class="btn outline hidden">🔓 重新開放</button>
+        <button id="view-orders-btn" class="btn primary">📋 查看全部訂單</button>
+      </div>
+    </div>
+
+    <!-- 全部訂單 Modal -->
+    <div id="all-orders-modal" class="modal-overlay hidden">
+      <div class="modal-card" style="max-width:720px;">
+        <div class="modal-header">
+          <h3>📋 今日全部訂單</h3>
+          <button id="close-all-orders-btn" class="btn ghost small">✕</button>
+        </div>
+        <div class="modal-body" id="all-orders-modal-body">
+          <p style="text-align:center;color:var(--text-muted);padding:2rem;">讀取中...</p>
+        </div>
+        <div class="modal-footer">
+          <button id="close-all-orders-btn2" class="btn ghost">關閉</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-grid">
+
+      <!-- 左欄：今日餐廳設定 -->
+      <div class="card">
+        <p class="card-title">📅 今日開放餐廳</p>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.75rem;">點選要開放的餐廳（可複選），未選的自動反灰。</p>
+        <div id="restaurant-check-grid" class="restaurant-check-grid">
+          <span style="color:var(--text-light);font-size:0.85rem;">讀取中...</span>
+        </div>
+        <button id="save-today-config-btn" class="btn primary full-width" style="margin-top:0.75rem;">儲存今日設定</button>
+        <div id="admin-config-msg" class="msg"></div>
+
+        <hr style="border:none;border-top:1px solid var(--border);margin:1.25rem 0;">
+
+        <p class="card-title" style="margin-bottom:0.75rem;">➕ 新增餐點</p>
+        <div class="form-group">
+          <label>餐廳名稱</label>
+          <input type="text" id="new-restaurant" placeholder="例如：50嵐">
+        </div>
+        <div class="form-group">
+          <label>品名</label>
+          <input type="text" id="new-name" placeholder="例如：珍珠奶茶(L)">
+        </div>
+        <div class="form-group">
+          <label>單價</label>
+          <input type="text" id="new-price" placeholder="例如：60">
+        </div>
+        <div class="form-group">
+          <label>分類</label>
+          <input type="text" id="new-category" placeholder="例如：飲品">
+        </div>
+        <button id="add-menu-btn" class="btn secondary full-width">➕ 新增至菜單</button>
+        <div id="add-menu-msg" class="msg"></div>
+      </div>
+
+      <!-- 右欄：菜單管理 -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+          <p class="card-title" style="margin-bottom:0;">🍽️ 菜單管理</p>
+          <a id="sheet-link" href="#" target="_blank" class="btn ghost small" style="font-size:0.8rem;">試算表連結 ↗</a>
+        </div>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>餐廳</th>
+                <th>品名</th>
+                <th>單價</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="admin-menu-tbody">
+              <tr><td colspan="5" class="loading">讀取中</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="sheetApi.js"></script>
+  <script src="auth.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
